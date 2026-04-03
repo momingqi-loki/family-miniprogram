@@ -180,3 +180,18 @@
   font-size: 22rpx;
   color: #CCC;
 }
+
+/* 调试模式 */
+.debug-section {
+  position: absolute;
+  bottom: 160rpx;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.debug-btn {
+  font-size: 24rpx;
+  color: #999;
+  padding: 10rpx 20rpx;
+}

@@ -46,6 +46,60 @@ Page({
     })
   },
 
+  // 调试模式登录（跳过后端）
+  onDebugLogin: function() {
+    wx.showModal({
+      title: '调试模式',
+      content: '是否跳过登录直接进入首页？\n（仅用于本地调试）',
+      confirmText: '确定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.debugLogin()
+        }
+      }
+    })
+  },
+
+  // 调试登录实现
+  debugLogin: function() {
+    wx.showLoading({ title: '进入调试模式...' })
+
+    // 模拟登录数据
+    const mockUser = {
+      _id: 'debug_user_' + Date.now(),
+      nickname: '调试用户',
+      avatar: '',
+      role: 'admin',
+      familyId: null,
+      phone: ''
+    }
+
+    const mockToken = 'debug_token_' + Date.now()
+
+    // 保存到本地存储
+    wx.setStorageSync('token', mockToken)
+    wx.setStorageSync('userInfo', mockUser)
+    wx.setStorageSync('debugMode', true)
+
+    // 更新全局数据
+    app.globalData.userInfo = mockUser
+    app.globalData.token = mockToken
+    app.globalData.isLogin = true
+
+    setTimeout(() => {
+      wx.hideLoading()
+      
+      // 检查是否有家庭
+      if (mockUser.familyId) {
+        wx.switchTab({ url: '/pages/index/index' })
+      } else {
+        // 跳转到家庭页
+        wx.redirectTo({ url: '/pages/family/join' })
+      }
+    }, 500)
+  },
+
   // 使用 code 登录
   loginWithCode: function(code, loginType) {
     request({
@@ -58,10 +112,12 @@ Page({
       // 保存登录信息
       wx.setStorageSync('token', token)
       wx.setStorageSync('userInfo', user)
+      wx.removeStorageSync('debugMode')
       
       // 更新全局数据
       app.globalData.userInfo = user
       app.globalData.token = token
+      app.globalData.isLogin = true
 
       wx.hideLoading()
       this.loginSuccess()
@@ -73,6 +129,20 @@ Page({
 
   // 验证 token
   checkToken: function(token) {
+    // 如果是调试模式 token，直接跳过验证
+    if (token.startsWith('debug_token_')) {
+      const userInfo = wx.getStorageSync('userInfo')
+      app.globalData.userInfo = userInfo
+      app.globalData.isLogin = true
+      
+      if (userInfo && userInfo.familyId) {
+        wx.switchTab({ url: '/pages/index/index' })
+      } else {
+        wx.redirectTo({ url: '/pages/family/join' })
+      }
+      return
+    }
+
     request({
       url: '/user/profile',
       method: 'GET'
@@ -98,7 +168,7 @@ Page({
       wx.switchTab({ url: '/pages/index/index' })
     } else {
       // 未加入家庭，跳转到家庭页
-      wx.navigateTo({ url: '/pages/family/join' })
+      wx.redirectTo({ url: '/pages/family/join' })
     }
   },
 

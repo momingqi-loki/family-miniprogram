@@ -37,6 +37,11 @@
     </button>
   </view>
 
+  <!-- 调试模式入口 -->
+  <view class="debug-section">
+    <text class="debug-btn" bindtap="onDebugLogin">调试模式 ›</text>
+  </view>
+
   <!-- 协议 -->
   <view class="agreement">
     <text class="agreement-text">登录即表示同意</text>
