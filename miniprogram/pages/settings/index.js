@@ -1,6 +1,6 @@
 // pages/settings/index.js - 设置页面逻辑
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../utils/request')
 
 Page({
   data: {

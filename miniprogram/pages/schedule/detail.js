@@ -1,6 +1,6 @@
 // pages/schedule/detail.js
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../utils/request')
 
 Page({
   data: {

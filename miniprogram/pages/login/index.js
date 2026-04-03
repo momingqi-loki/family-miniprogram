@@ -1,6 +1,6 @@
 // pages/login/index.js - 登录逻辑
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../../utils/request')
 
 Page({
   data: {

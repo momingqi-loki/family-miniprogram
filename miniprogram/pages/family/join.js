@@ -1,6 +1,6 @@
-// pages/family/join.js - 加入或创建家庭
+// pages/family/join.js - 加入或创建家庭（调试版）
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../../utils/request')
 
 Page({
   data: {
@@ -8,6 +8,14 @@ Page({
     familyName: '',
     description: '',
     inviteCode: ''
+  },
+
+  onLoad: function() {
+    // 如果是调试模式，直接创建模拟家庭
+    const isDebugMode = wx.getStorageSync('debugMode')
+    if (isDebugMode) {
+      this.debugCreateFamily()
+    }
   },
 
   switchTab: function(e) {
@@ -34,6 +42,13 @@ Page({
       return
     }
 
+    // 调试模式：直接跳过API调用
+    const isDebugMode = wx.getStorageSync('debugMode')
+    if (isDebugMode) {
+      this.debugCreateFamily()
+      return
+    }
+
     wx.showLoading({ title: '创建中...' })
 
     request({
@@ -53,10 +68,50 @@ Page({
     })
   },
 
+  // 调试模式创建家庭
+  debugCreateFamily: function() {
+    wx.showLoading({ title: '创建中...' })
+
+    const mockFamily = {
+      _id: 'debug_family_' + Date.now(),
+      name: this.data.familyName || '我的家庭',
+      inviteCode: 'ABC123',
+      description: this.data.description || ''
+    }
+
+    // 保存家庭信息
+    app.globalData.familyInfo = mockFamily
+    wx.setStorageSync('familyInfo', mockFamily)
+
+    // 更新用户信息
+    const userInfo = wx.getStorageSync('userInfo') || {}
+    userInfo.familyId = mockFamily._id
+    wx.setStorageSync('userInfo', userInfo)
+    app.globalData.userInfo = userInfo
+
+    setTimeout(() => {
+      wx.hideLoading()
+      wx.showToast({
+        title: '创建成功！',
+        icon: 'success'
+      })
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/index/index' })
+      }, 1500)
+    }, 500)
+  },
+
   // 加入家庭
   onJoinFamily: function() {
     if (!this.data.inviteCode || this.data.inviteCode.length < 6) {
       wx.showToast({ title: '请输入正确的邀请码', icon: 'none' })
+      return
+    }
+
+    // 调试模式：直接跳过
+    const isDebugMode = wx.getStorageSync('debugMode')
+    if (isDebugMode) {
+      this.debugJoinFamily()
       return
     }
 
@@ -78,12 +133,44 @@ Page({
     })
   },
 
+  // 调试模式加入家庭
+  debugJoinFamily: function() {
+    wx.showLoading({ title: '加入中...' })
+
+    const mockFamily = {
+      _id: 'debug_family_joined_' + Date.now(),
+      name: '家庭 ' + this.data.inviteCode,
+      inviteCode: this.data.inviteCode,
+      description: ''
+    }
+
+    // 保存家庭信息
+    app.globalData.familyInfo = mockFamily
+    wx.setStorageSync('familyInfo', mockFamily)
+
+    // 更新用户信息
+    const userInfo = wx.getStorageSync('userInfo') || {}
+    userInfo.familyId = mockFamily._id
+    wx.setStorageSync('userInfo', userInfo)
+    app.globalData.userInfo = userInfo
+
+    setTimeout(() => {
+      wx.hideLoading()
+      wx.showToast({
+        title: '加入成功！',
+        icon: 'success'
+      })
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/index/index' })
+      }, 1500)
+    }, 500)
+  },
+
   // 扫码加入
   onScanQRCode: function() {
     wx.scanCode({
       onlyFromCamera: true,
       success: (res) => {
-        // 解析二维码内容，提取邀请码
         const code = res.result
         this.setData({ inviteCode: code })
         this.onJoinFamily()
@@ -96,16 +183,14 @@ Page({
 
   // 处理加入/创建成功
   handleFamilySuccess: function(data) {
-    // 保存家庭信息
-    app.globalData.familyInfo = data.family
-    wx.setStorageSync('familyInfo', data.family)
+    app.globalData.familyInfo = data
+    wx.setStorageSync('familyInfo', data)
 
     wx.showToast({
       title: '成功！',
       icon: 'success'
     })
 
-    // 跳转到首页
     setTimeout(() => {
       wx.switchTab({ url: '/pages/index/index' })
     }, 1500)

@@ -1,6 +1,6 @@
 // pages/index/index.js - 首页逻辑
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../utils/request')
 
 Page({
   data: {

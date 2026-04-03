@@ -1,6 +1,6 @@
 // pages/plan/holiday-create.js - 创建/编辑节日
 const app = getApp()
-const request = require('../../utils/request')
+const { request } = require('../utils/request')
 
 Page({
   data: {
