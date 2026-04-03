@@ -1,0 +1,65 @@
+<!--pages/schedule/index.wxml-->
+<view class="container">
+  <!-- 日期切换 -->
+  <view class="date-header">
+    <view class="date-nav" bindtap="prevMonth">
+      <text class="nav-icon">◀</text>
+    </view>
+    <view class="date-info">
+      <text class="date-month">{{currentYear}}年{{currentMonth}}月</text>
+    </view>
+    <view class="date-nav" bindtap="nextMonth">
+      <text class="nav-icon">▶</text>
+    </view>
+  </view>
+
+  <!-- 今日日程 -->
+  <view class="section" wx:if="{{todayEvents.length > 0}}">
+    <view class="section-title">
+      <text class="title">📅 今日日程 ({{todayEvents.length}})</text>
+    </view>
+    <view class="event-list">
+      <view
+        class="event-item"
+        wx:for="{{todayEvents}}"
+        wx:key="id"
+        bindtap="viewEvent"
+        data-id="{{item.id}}"
+      >
+        <text class="event-time">{{item.startTime}}</text>
+        <text class="event-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日历占位 -->
+  <view class="calendar-placeholder">
+    <text class="placeholder-text">日历组件待集成</text>
+    <text class="placeholder-hint">本月有 {{events.length}} 个日程</text>
+  </view>
+
+  <!-- 本月日程列表 -->
+  <view class="section" wx:if="{{events.length > 0}}">
+    <view class="section-title">
+      <text class="title">📋 本月日程</text>
+    </view>
+    <view class="event-list">
+      <view
+        class="event-item"
+        wx:for="{{events}}"
+        wx:key="id"
+        bindtap="viewEvent"
+        data-id="{{item.id}}"
+      >
+        <text class="event-date">{{item.startDate}}</text>
+        <text class="event-time">{{item.startTime}}</text>
+        <text class="event-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新建按钮 -->
+  <view class="fab" bindtap="createEvent">
+    <text class="fab-icon">+</text>
+  </view>
+</view>

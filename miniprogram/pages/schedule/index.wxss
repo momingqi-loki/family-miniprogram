@@ -1,0 +1,139 @@
+/* pages/schedule/index.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #F5F5F5;
+  min-height: 100vh;
+}
+
+/* 日期头部 */
+.date-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.date-nav {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F5F5F5;
+  border-radius: 50%;
+}
+
+.nav-icon {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.date-info {
+  flex: 1;
+  text-align: center;
+}
+
+.date-month {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 模块 */
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 日程列表 */
+.event-list {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-date {
+  font-size: 24rpx;
+  color: #999999;
+  width: 100rpx;
+}
+
+.event-time {
+  font-size: 28rpx;
+  color: #2196F3;
+  width: 100rpx;
+}
+
+.event-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+/* 日历占位 */
+.calendar-placeholder {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 60rpx 20rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.placeholder-text {
+  display: block;
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 15rpx;
+}
+
+.placeholder-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #CCCCCC;
+}
+
+/* 悬浮按钮 */
+.fab {
+  position: fixed;
+  bottom: 100rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #FF8C00;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(255, 140, 0, 0.3);
+  z-index: 1000;
+}
+
+.fab-icon {
+  font-size: 60rpx;
+  color: #FFFFFF;
+  line-height: 1;
+}

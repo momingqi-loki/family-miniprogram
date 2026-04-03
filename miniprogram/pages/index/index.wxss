@@ -1,0 +1,184 @@
+/* pages/index/index.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #F5F5F5;
+  min-height: 100vh;
+}
+
+/* 头部 */
+.header {
+  margin-bottom: 30rpx;
+}
+
+.greeting {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.date {
+  display: block;
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* 模块 */
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 卡片 */
+.card {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #EEEEEE;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 任务列表 */
+.task-list {
+  margin-top: 20rpx;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.task-assignee {
+  font-size: 24rpx;
+  color: #FF8C00;
+  margin-left: 20rpx;
+}
+
+/* 日程列表 */
+.event-list {
+  margin-top: 20rpx;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-time {
+  font-size: 28rpx;
+  color: #2196F3;
+  width: 120rpx;
+}
+
+.event-title {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+/* 快捷入口 */
+.quick-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30rpx;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+}
+
+.action-icon {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
+}
+
+.action-label {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* 家庭成员列表 */
+.member-list {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 20rpx;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #FF8C00;
+  color: #FFFFFF;
+  font-size: 32rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.member-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.member-status {
+  font-size: 24rpx;
+  color: #4CAF50;
+}

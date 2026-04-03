@@ -1,0 +1,95 @@
+<!--pages/plan/index.wxml-->
+<view class="container">
+  <!-- 标签切换 -->
+  <view class="tabs">
+    <view
+      class="tab {{activeTab === 'trip' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="trip"
+    >
+      🌴 旅游规划
+    </view>
+    <view
+      class="tab {{activeTab === 'holiday' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="holiday"
+    >
+      🎉 节日管理
+    </view>
+  </view>
+
+  <!-- 旅游列表 -->
+  <view class="tab-content" wx:if="{{activeTab === 'trip'}}">
+    <view class="header">
+      <text class="title">旅游列表</text>
+      <button class="btn-create" bindtap="createTrip">+ 新建</button>
+    </view>
+
+    <view class="list">
+      <view
+        class="card trip-card"
+        wx:for="{{trips}}"
+        wx:key="id"
+        bindtap="viewTrip"
+        data-id="{{item.id}}"
+      >
+        <view class="card-header">
+          <text class="trip-emoji">🌴</text>
+          <view class="trip-info">
+            <text class="trip-title">{{item.destination}}</text>
+            <text class="trip-date">待定{{item.startDate}}</text>
+          </view>
+        </view>
+        <view class="card-body">
+          <text class="info-item">👥 {{item.participantCount}}人</text>
+          <text class="info-item">📍 {{item.destination}}</text>
+        </view>
+        <view class="card-footer">
+          <text class="status">{{item.statusText}}</text>
+        </view>
+      </view>
+
+      <view class="empty" wx:if="{{trips.length === 0}}">
+        <text class="empty-text">暂无旅游计划</text>
+        <text class="empty-hint">点击"新建"按钮创建</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 节日列表 -->
+  <view class="tab-content" wx:if="{{activeTab === 'holiday'}}">
+    <view class="header">
+      <text class="title">节日列表</text>
+      <button class="btn-create" bindtap="createHoliday">+ 新建</button>
+    </view>
+
+    <view class="list">
+      <view
+        class="card holiday-card"
+        wx:for="{{holidays}}"
+        wx:key="id"
+        bindtap="viewHoliday"
+        data-id="{{item.id}}"
+      >
+        <view class="card-header">
+          <text class="holiday-emoji">{{item.emoji}}</text>
+          <view class="holiday-info">
+            <text class="holiday-title">{{item.name}}</text>
+            <text class="holiday-date">{{item.date}}</text>
+          </view>
+        </view>
+        <view class="card-body">
+          <text class="info-item">⏰ 提前{{item.remindDays}}天提醒</text>
+        </view>
+        <view class="card-footer">
+          <text class="type">{{item.typeText}}</text>
+        </view>
+      </view>
+
+      <view class="empty" wx:if="{{holidays.length === 0}}">
+        <text class="empty-text">暂无节日记录</text>
+        <text class="empty-hint">点击"新建"按钮添加</text>
+      </view>
+    </view>
+  </view>
+</view>

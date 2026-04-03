@@ -1,0 +1,75 @@
+<!--pages/settings/index.wxml-->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="card user-card">
+    <view class="user-avatar">
+      <text class="avatar-text">{{userInfo.nickname.substring(0, 1)}}</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname}}</text>
+      <text class="user-role">{{userInfo.role === 'admin' ? '管理员' : '成员'}}</text>
+    </view>
+    <view class="user-action" bindtap="editProfile">
+      <text class="action-text">编辑</text>
+    </view>
+  </view>
+
+  <!-- 家庭信息 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title">家庭信息</text>
+    </view>
+
+    <view class="card family-card" wx:if="{{familyInfo}}">
+      <text class="family-name">{{familyInfo.name}}</text>
+      <text class="family-count">{{familyMembers.length}} 位成员</text>
+    </view>
+
+    <view class="card family-create" wx:if="{{!familyInfo}}" bindtap="createFamily">
+      <text class="create-icon">🏠</text>
+      <text class="create-text">创建家庭</text>
+    </view>
+  </view>
+
+  <!-- 家庭成员 -->
+  <view class="section" wx:if="{{familyMembers.length > 0}}">
+    <view class="section-title">
+      <text class="title">家庭成员</text>
+    </view>
+
+    <view class="member-list">
+      <view class="member-item" wx:for="{{familyMembers}}" wx:key="id">
+        <text class="member-avatar">{{item.nickname.substring(0, 1)}}</text>
+        <text class="member-name">{{item.nickname}}</text>
+        <text class="member-role">{{item.role === 'admin' ? '管理员' : '成员'}}</text>
+      </view>
+    </view>
+
+    <view class="section-action" bindtap="inviteMember" wx:if="{{userInfo.role === 'admin'}}">
+      <text class="action-text">+ 邀请成员</text>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title">其他</text>
+    </view>
+
+    <view class="setting-list">
+      <view class="setting-item">
+        <text class="setting-label">通知设置</text>
+        <text class="setting-arrow">▶</text>
+      </view>
+      <view class="setting-item">
+        <text class="setting-label">关于我们</text>
+        <text class="setting-arrow">▶</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="section logout-section">
+    <button class="btn-logout" bindtap="logout">退出登录</button>
+  </view>
+</view>
