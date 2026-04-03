@@ -1,0 +1,25 @@
+<view class="container">
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+  
+  <view class="detail-content" wx:if="{{event && !loading}}">
+    <view class="header">
+      <view class="title">{{event.title}}</view>
+      <view class="type-tag">{{event.type === 'meeting' ? '会议' : event.type === 'reminder' ? '提醒' : event.type === 'activity' ? '活动' : '其他'}}</view>
+    </view>
+
+    <view class="section">
+      <view class="label">日期</view>
+      <view class="value">{{event.date}} {{event.time || ''}}</view>
+    </view>
+
+    <view class="section" wx:if="{{event.description}}">
+      <view class="label">描述</view>
+      <view class="description">{{event.description}}</view>
+    </view>
+
+    <view class="actions">
+      <button class="btn-edit" bindtap="editEvent">编辑</button>
+      <button class="btn-delete" bindtap="deleteEvent">删除</button>
+    </view>
+  </view>
+</view>

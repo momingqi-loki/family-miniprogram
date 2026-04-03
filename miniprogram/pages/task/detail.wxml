@@ -1,0 +1,37 @@
+<view class="container">
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+  
+  <view class="detail-content" wx:if="{{task && !loading}}">
+    <view class="header">
+      <view class="title">{{task.title}}</view>
+      <view class="status-tag {{task.status}}">
+        {{task.status === 'todo' ? '待办' : task.status === 'inprogress' ? '进行中' : '已完成'}}
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="label">优先级</view>
+      <view class="priority {{task.priority}}">
+        {{task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : '高'}}
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{task.deadline}}">
+      <view class="label">截止日期</view>
+      <view class="value">{{task.deadline}}</view>
+    </view>
+
+    <view class="section" wx:if="{{task.description}}">
+      <view class="label">描述</view>
+      <view class="description">{{task.description}}</view>
+    </view>
+
+    <view class="actions">
+      <button class="btn-toggle" bindtap="toggleStatus">
+        {{task.status === 'completed' ? '标记为待办' : '标记为完成'}}
+      </button>
+      <button class="btn-edit" bindtap="editTask">编辑</button>
+      <button class="btn-delete" bindtap="deleteTask">删除</button>
+    </view>
+  </view>
+</view>

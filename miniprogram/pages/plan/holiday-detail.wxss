@@ -1,0 +1,82 @@
+.container {
+  padding: 20rpx;
+}
+
+.loading {
+  text-align: center;
+  padding: 100rpx;
+  color: #999;
+}
+
+.detail-content {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+}
+
+.header {
+  border-bottom: 1rpx solid #eee;
+  padding-bottom: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.date {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.section {
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  background: #FFF3E0;
+  color: #FF8C00;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+}
+
+.description {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+}
+
+.btn-edit, .btn-delete {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+}
+
+.btn-edit {
+  background: #FF8C00;
+  color: #fff;
+}
+
+.btn-delete {
+  background: #fff;
+  color: #ff4444;
+  border: 1rpx solid #ff4444;
+}

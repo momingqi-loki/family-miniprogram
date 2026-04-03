@@ -1,0 +1,48 @@
+<view class="container">
+  <view class="form">
+    <view class="form-item">
+      <view class="label">日程标题</view>
+      <input 
+        class="input" 
+        placeholder="请输入日程标题"
+        value="{{event.title}}"
+        bindinput="onTitleInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="label">日期</view>
+      <picker mode="date" value="{{event.date}}" bindchange="onDateChange">
+        <view class="picker">{{event.date || '请选择日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">时间</view>
+      <picker mode="time" value="{{event.time}}" bindchange="onTimeChange">
+        <view class="picker">{{event.time || '请选择时间'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">类型</view>
+      <picker mode="selector" range="{{types}}" bindchange="onTypeChange">
+        <view class="picker">
+          {{event.type === 'meeting' ? '会议' : event.type === 'reminder' ? '提醒' : event.type === 'activity' ? '活动' : '其他'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="label">描述</view>
+      <textarea 
+        class="textarea"
+        placeholder="请输入描述"
+        value="{{event.description}}"
+        bindinput="onDescriptionInput"
+      />
+    </view>
+
+    <button class="submit-btn" bindtap="submit">保存</button>
+  </view>
+</view>
