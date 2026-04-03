@@ -1,0 +1,11 @@
+# 微信小程序 node_modules
+# 注意：miniprogram/node_modules 应该被提交，因为需要用于 npm 构建
+# 微信开发者工具需要先构建 npm：
+# 工具栏 -> 工具 -> 构建 npm
+
+# 排除构建产物
+miniprogram_npm/
+
+# 临时文件
+*.tmp
+*.temp

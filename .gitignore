@@ -1,5 +1,7 @@
 # Dependencies
 node_modules/
+server/node_modules/
+miniprogram/node_modules/
 
 # Environment
 .env
@@ -21,6 +23,7 @@ Thumbs.db
 # Build
 dist/
 build/
+miniprogram/miniprogram_npm/
 
 # Temp
 *.tmp
