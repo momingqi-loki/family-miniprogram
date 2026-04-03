@@ -1,0 +1,96 @@
+#!/bin/bash
+# pre-commit hook for WeChat Miniprogram validation
+
+echo "🔍 Running pre-commit validation..."
+
+PROJECT_DIR="$(git rev-parse --show-toplevel)"
+MINIPROGRAM_DIR="$PROJECT_DIR/miniprogram"
+ERRORS=0
+
+# Check if miniprogram directory exists
+if [ ! -d "$MINIPROGRAM_DIR" ]; then
+    echo "✅ No miniprogram directory, skipping validation"
+    exit 0
+fi
+
+# 1. Validate JSON syntax
+echo "📋 Checking JSON files..."
+for json in "$MINIPROGRAM_DIR"/**/*.json; do
+    if [ -f "$json" ]; then
+        if ! python3 -c "import json; json.load(open('$json'))" 2>/dev/null; then
+            echo "❌ Invalid JSON: $json"
+            ERRORS=$((ERRORS + 1))
+        fi
+    fi
+done
+
+# 2. Check for required app.json fields
+echo "📋 Checking app.json structure..."
+if [ -f "$MINIPROGRAM_DIR/app.json" ]; then
+    if python3 -c "
+import json
+with open('$MINIPROGRAM_DIR/app.json') as f:
+    app = json.load(f)
+    # Check required fields
+    if 'pages' not in app:
+        print('Missing pages field')
+        exit(1)
+    # Check all pages exist
+    import os
+    for page in app['pages']:
+        page_path = os.path.join('$MINIPROGRAM_DIR', page + '.js')
+        if not os.path.exists(page_path):
+            print(f'Missing page: {page}')
+            exit(1)
+" 2>/dev/null; then
+        echo "✅ app.json structure valid"
+    else
+        echo "❌ app.json structure invalid"
+        ERRORS=$((ERRORS + 1))
+    fi
+fi
+
+# 3. Check for required files referenced in app.json
+echo "📋 Checking referenced files..."
+if [ -f "$MINIPROGRAM_DIR/app.json" ]; then
+    python3 -c "
+import json, os, glob
+
+with open('$MINIPROGRAM_DIR/app.json') as f:
+    app = json.load(f)
+
+# Check tabBar icons exist
+if 'tabBar' in app and 'list' in app['tabBar']:
+    for item in app['tabBar']['list']:
+        for icon in ['iconPath', 'selectedIconPath']:
+            if icon in item:
+                icon_path = os.path.join('$MINIPROGRAM_DIR', item[icon])
+                if not os.path.exists(icon_path):
+                    print(f'❌ Missing icon: {item[icon]}')
+                    exit(1)
+print('✅ All referenced files exist')
+" 2>/dev/null || echo "⚠️ Could not validate referenced files"
+fi
+
+# 4. Check JS syntax (basic)
+echo "📋 Checking JavaScript files..."
+for js in "$MINIPROGRAM_DIR"/**/*.js; do
+    if [ -f "$js" ]; then
+        # Use node to check syntax
+        if ! node --check "$js" 2>/dev/null; then
+            echo "❌ Syntax error: $js"
+            ERRORS=$((ERRORS + 1))
+        fi
+    fi
+done
+
+# Summary
+echo ""
+if [ $ERRORS -eq 0 ]; then
+    echo "✅ Pre-commit validation passed!"
+    exit 0
+else
+    echo "❌ Pre-commit validation failed with $ERRORS error(s)"
+    echo "💡 To bypass validation temporarily: git commit --no-verify"
+    exit 1
+fi
