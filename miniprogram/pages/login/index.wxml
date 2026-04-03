@@ -1,0 +1,50 @@
+<!-- pages/login/index.wxml - 登录页面 -->
+<view class="container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+  </view>
+
+  <!-- Logo 区域 -->
+  <view class="logo-section">
+    <view class="logo-container">
+      <view class="logo-icon">🏠</view>
+    </view>
+    <view class="app-name">家庭管理</view>
+    <view class="app-slogan">让家庭生活更有序</view>
+  </view>
+
+  <!-- 登录表单 -->
+  <view class="login-section">
+    <!-- 微信授权登录 -->
+    <button class="btn-wechat" bindtap="onWechatLogin">
+      <view class="btn-icon">📱</view>
+      <text class="btn-text">微信一键登录</text>
+    </button>
+
+    <!-- 手机号登录 -->
+    <view class="divider">
+      <view class="divider-line"></view>
+      <text class="divider-text">其他方式</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <button class="btn-phone" bindtap="onPhoneLogin">
+      <view class="btn-icon">📞</view>
+      <text class="btn-text">手机号登录</text>
+    </button>
+  </view>
+
+  <!-- 协议 -->
+  <view class="agreement">
+    <text class="agreement-text">登录即表示同意</text>
+    <text class="link" bindtap="onShowAgreement">《用户协议》</text>
+    <text class="agreement-text">和</text>
+    <text class="link" bindtap="onShowPrivacy">《隐私政策》</text>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version">v1.0.0</view>
+</view>

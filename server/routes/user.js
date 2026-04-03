@@ -3,18 +3,52 @@ const router = express.Router();
 const User = require('../models/user');
 const Family = require('../models/family');
 const jwt = require('jsonwebtoken');
+const https = require('https');
 
 // 微信登录
 router.post('/login', async (req, res) => {
   try {
-    const { code } = req.body;
+    const { code, loginType } = req.body;
+    let openid;
 
-    // TODO: 调用微信API获取openid和session_key
-    // const wxResult = await getWechatUserInfo(code);
-    // const { openid, session_key } = wxResult;
+    // 根据登录类型处理
+    if (loginType === 'wechat' && code) {
+      // 调用微信 API 获取 openid
+      const wxConfig = {
+        appid: process.env.WX_APPID || '',
+        secret: process.env.WX_SECRET || '',
+        js_code: code,
+        grant_type: 'authorization_code'
+      };
 
-    // 临时模拟openid
-    const openid = 'test_openid_' + Date.now();
+      // 如果没有配置微信参数，使用模拟 openid
+      if (!wxConfig.appid || !wxConfig.secret) {
+        console.log('微信配置未设置，使用模拟 openid');
+        openid = 'test_openid_' + Date.now();
+      } else {
+        // 调用微信接口
+        try {
+          const wxResult = await callWxAPI(wxConfig);
+          if (wxResult.errcode) {
+            return res.status(400).json({
+              code: 400,
+              message: '微信登录失败：' + wxResult.errmsg
+            });
+          }
+          openid = wxResult.openid;
+        } catch (err) {
+          console.error('微信 API 调用失败', err);
+          openid = 'test_openid_' + Date.now();
+        }
+      }
+    } else if (loginType === 'phone' && req.body.phone) {
+      // 手机号登录（需要先通过微信获取手机号）
+      const { phone } = req.body;
+      openid = 'phone_' + phone; // 简化处理
+    } else {
+      // 默认使用模拟 openid
+      openid = 'guest_' + Date.now();
+    }
 
     // 查找或创建用户
     let user = await User.findOne({ openid });
@@ -24,12 +58,18 @@ router.post('/login', async (req, res) => {
       user = new User({
         openid,
         nickname: '用户' + Math.floor(Math.random() * 1000),
-        role: 'admin' // 第一个用户默认为管理员
+        role: 'admin',
+        phone: req.body.phone || ''
       });
       await user.save();
     }
 
-    // 生成token
+    // 更新登录时间
+    user.lastLoginAt = new Date();
+    user.online = true;
+    await user.save();
+
+    // 生成 token
     const token = jwt.sign(
       { userId: user._id, familyId: user.familyId },
       process.env.JWT_SECRET || 'your-secret-key',
@@ -41,12 +81,13 @@ router.post('/login', async (req, res) => {
       message: '登录成功',
       data: {
         token,
-        userInfo: {
-          id: user._id,
+        user: {
+          _id: user._id,
           nickname: user.nickname,
           avatar: user.avatar,
           role: user.role,
-          familyId: user.familyId
+          familyId: user.familyId,
+          phone: user.phone
         }
       }
     });
@@ -60,13 +101,11 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 更新用户信息
-router.put('/profile', async (req, res) => {
+// 获取用户信息
+router.get('/profile', async (req, res) => {
   try {
-    const { nickname, avatar } = req.body;
     const userId = req.user._id;
-
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('-openid');
 
     if (!user) {
       return res.status(404).json({
@@ -75,87 +114,102 @@ router.put('/profile', async (req, res) => {
       });
     }
 
-    user.nickname = nickname || user.nickname;
-    user.avatar = avatar || user.avatar;
-
-    await user.save();
+    // 获取家庭信息
+    let familyInfo = null;
+    if (user.familyId) {
+      familyInfo = await Family.findById(user.familyId);
+    }
 
     res.json({
       code: 0,
-      message: '更新用户信息成功',
+      data: {
+        ...user.toObject(),
+        familyInfo
+      }
+    });
+  } catch (error) {
+    console.error('获取用户信息失败', error);
+    res.status(500).json({
+      code: 500,
+      message: '获取用户信息失败'
+    });
+  }
+});
+
+// 更新用户信息
+router.put('/profile', async (req, res) => {
+  try {
+    const { nickname, avatar, phone } = req.body;
+    const userId = req.user._id;
+
+    const updateData = {};
+    if (nickname) updateData.nickname = nickname;
+    if (avatar) updateData.avatar = avatar;
+    if (phone) updateData.phone = phone;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        code: 404,
+        message: '用户不存在'
+      });
+    }
+
+    res.json({
+      code: 0,
+      message: '更新成功',
       data: user
     });
   } catch (error) {
     console.error('更新用户信息失败', error);
     res.status(500).json({
       code: 500,
-      message: '更新用户信息失败',
-      error: error.message
+      message: '更新用户信息失败'
     });
   }
 });
 
-// 获取用户信息
-router.get('/profile', async (req, res) => {
+// 退出登录
+router.post('/logout', async (req, res) => {
   try {
     const userId = req.user._id;
-    const user = await User.findById(userId).populate('familyId');
-
-    if (!user) {
-      return res.status(404).json({
-        code: 404,
-        message: '用户不存在'
-      });
-    }
+    await User.findByIdAndUpdate(userId, { online: false });
 
     res.json({
       code: 0,
-      message: 'success',
-      data: user
+      message: '退出成功'
     });
   } catch (error) {
-    console.error('获取用户信息失败', error);
+    console.error('退出登录失败', error);
     res.status(500).json({
       code: 500,
-      message: '获取用户信息失败',
-      error: error.message
+      message: '退出登录失败'
     });
   }
 });
 
-// 更新在线状态
-router.put('/online', async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const { online } = req.body;
+// 调用微信 API
+function callWxAPI(params) {
+  return new Promise((resolve, reject) => {
+    const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${params.appid}&secret=${params.secret}&js_code=${params.js_code}&grant_type=${params.grant_type}`;
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({
-        code: 404,
-        message: '用户不存在'
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(e);
+        }
       });
-    }
-
-    user.online = online;
-    user.lastLoginAt = new Date();
-
-    await user.save();
-
-    res.json({
-      code: 0,
-      message: '更新在线状态成功',
-      data: user
-    });
-  } catch (error) {
-    console.error('更新在线状态失败', error);
-    res.status(500).json({
-      code: 500,
-      message: '更新在线状态失败',
-      error: error.message
-    });
-  }
-});
+    }).on('error', reject);
+  });
+}
 
 module.exports = router;

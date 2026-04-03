@@ -1,97 +1,94 @@
-// pages/plan/holiday-create.js
+// pages/plan/holiday-create.js - 创建/编辑节日
 const app = getApp()
 const request = require('../../utils/request')
 
 Page({
   data: {
-    form: {
+    holidayId: null,
+    holiday: {
       name: '',
       date: '',
       type: 'birthday',
-      remindDays: 7,
-      suggestions: ''
+      isLunar: false,
+      description: ''
     },
-    typeOptions: [
-      { value: 'birthday', label: '生日', emoji: '🎂' },
-      { value: 'anniversary', label: '纪念日', emoji: '💕' },
-      { value: 'reunion', label: '家庭聚餐', emoji: '🍽️' },
-      { value: 'festival', label: '传统节日', emoji: '🏮' }
+    types: [
+      { value: 'birthday', name: '生日', icon: '🎂' },
+      { value: 'anniversary', name: '纪念日', icon: '💕' },
+      { value: 'reunion', name: '聚餐', icon: '🍽️' },
+      { value: 'festival', name: '节日', icon: '🏮' },
+      { value: 'vacation', name: '假期', icon: '✈️' },
+      { value: 'other', name: '其他', icon: '📌' }
     ]
   },
 
-  // 输入节日名称
-  bindNameInput: function (e) {
-    this.setData({
-      'form.name': e.detail.value
-    })
-  },
-
-  // 选择日期
-  bindDateChange: function (e) {
-    this.setData({
-      'form.date': e.detail.value
-    })
-  },
-
-  // 选择类型
-  bindTypeChange: function (e) {
-    const type = this.data.typeOptions[e.detail.value].value
-    this.setData({
-      'form.type': type
-    })
-  },
-
-  // 选择提醒天数
-  bindRemindDaysChange: function (e) {
-    this.setData({
-      'form.remindDays': e.detail.value
-    })
-  },
-
-  // 输入庆祝建议
-  bindSuggestionsInput: function (e) {
-    this.setData({
-      'form.suggestions': e.detail.value
-    })
-  },
-
-  // 提交表单
-  submitForm: function () {
-    const form = this.data.form
-
-    // 验证
-    if (!form.name) {
-      wx.showToast({
-        title: '请输入节日名称',
-        icon: 'none'
+  onLoad: function(options) {
+    if (options.id) {
+      this.setData({ holidayId: options.id })
+      wx.setNavigationBarTitle({ title: '编辑节日' })
+      this.loadHoliday(options.id)
+    } else {
+      // 设置默认日期为今天
+      const today = new Date().toISOString().split('T')[0]
+      this.setData({
+        'holiday.date': today
       })
+    }
+  },
+
+  loadHoliday: function(id) {
+    request({
+      url: `/holidays/${id}`,
+      method: 'GET'
+    }).then(res => {
+      this.setData({ holiday: res.data })
+    }).catch(() => {
+      wx.showToast({ title: '加载失败', icon: 'none' })
+    })
+  },
+
+  onNameInput: function(e) {
+    this.setData({ 'holiday.name': e.detail.value })
+  },
+
+  onDateChange: function(e) {
+    this.setData({ 'holiday.date': e.detail.value })
+  },
+
+  onTypeSelect: function(e) {
+    const type = e.currentTarget.dataset.type
+    this.setData({ 'holiday.type': type })
+  },
+
+  onCalendarChange: function(e) {
+    const isLunar = e.currentTarget.dataset.lunar === 'true'
+    this.setData({ 'holiday.isLunar': isLunar })
+  },
+
+  onDescriptionInput: function(e) {
+    this.setData({ 'holiday.description': e.detail.value })
+  },
+
+  submit: function() {
+    const holiday = this.data.holiday
+    
+    if (!holiday.name || !holiday.date) {
+      wx.showToast({ title: '请填写名称和日期', icon: 'none' })
       return
     }
 
-    if (!form.date) {
-      wx.showToast({
-        title: '请选择日期',
-        icon: 'none'
-      })
-      return
-    }
+    const method = this.data.holidayId ? 'PUT' : 'POST'
+    const url = this.data.holidayId ? `/holidays/${this.data.holidayId}` : '/holidays'
 
-    // 创建节日
-    request.post('/holidays', form).then(res => {
-      wx.showToast({
-        title: '创建成功',
-        icon: 'success'
-      })
-      setTimeout(() => {
-        wx.navigateBack()
-      }, 1500)
-    }).catch(err => {
-      console.error('创建节日失败', err)
+    request({
+      url: url,
+      method: method,
+      data: holiday
+    }).then(() => {
+      wx.showToast({ title: '保存成功', icon: 'success' })
+      setTimeout(() => wx.navigateBack(), 1500)
+    }).catch(() => {
+      wx.showToast({ title: '保存失败', icon: 'none' })
     })
-  },
-
-  // 取消
-  cancel: function () {
-    wx.navigateBack()
   }
 })

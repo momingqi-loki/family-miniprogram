@@ -35,7 +35,7 @@ Page({
   // 编辑旅游
   editTrip: function () {
     wx.navigateTo({
-      url: `/pages/plan/trip-edit?id=${this.data.tripId}`
+      url: `/pages/plan/trip-create?id=${this.data.tripId}`
     })
   },
 

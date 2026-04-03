@@ -1,0 +1,78 @@
+<!-- pages/family/join.wxml - 加入或创建家庭 -->
+<view class="container">
+  <view class="header">
+    <view class="icon">👨‍👩‍👧‍👦</view>
+    <view class="title">欢迎加入家庭</view>
+    <view class="subtitle">创建一个新家庭或加入已有家庭</view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tabs">
+    <view 
+      class="tab {{activeTab === 'create' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="create"
+    >
+      创建家庭
+    </view>
+    <view 
+      class="tab {{activeTab === 'join' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="join"
+    >
+      加入家庭
+    </view>
+  </view>
+
+  <!-- 创建家庭 -->
+  <view class="form-section" wx:if="{{activeTab === 'create'}}">
+    <view class="form-item">
+      <view class="label">家庭名称</view>
+      <input 
+        class="input" 
+        placeholder="例如：幸福一家人"
+        bindinput="onFamilyNameInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="label">家庭描述（选填）</view>
+      <textarea 
+        class="textarea"
+        placeholder="介绍一下你的家庭..."
+        bindinput="onDescriptionInput"
+      />
+    </view>
+
+    <button class="btn-create" bindtap="onCreateFamily">
+      创建家庭
+    </button>
+  </view>
+
+  <!-- 加入家庭 -->
+  <view class="form-section" wx:if="{{activeTab === 'join'}}">
+    <view class="form-item">
+      <view class="label">家庭邀请码</view>
+      <input 
+        class="input code-input" 
+        placeholder="请输入6位邀请码"
+        maxlength="6"
+        bindinput="onCodeInput"
+      />
+    </view>
+
+    <view class="divider-text">或</view>
+
+    <view class="form-item">
+      <view class="label">扫码加入</view>
+      <button class="btn-scan" bindtap="onScanQRCode">
+        <text class="icon">📷</text>
+        <text>扫描二维码</text>
+      </button>
+    </view>
+
+    <button class="btn-join" bindtap="onJoinFamily">
+      加入家庭
+    </button>
+  </view>
+</view>

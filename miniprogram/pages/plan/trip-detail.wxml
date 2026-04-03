@@ -1,64 +1,70 @@
-<!--pages/plan/trip-detail.wxml-->
-<view class="container" wx:if="{{!loading}}">
-  <view class="header">
-    <text class="title">🌴 {{trip.destination}}</text>
-  </view>
-
-  <!-- 基本信息 -->
-  <view class="card">
-    <view class="card-title">基本信息</view>
-    <view class="info-list">
-      <view class="info-item">
-        <text class="label">📅 开始日期</text>
-        <text class="value">{{trip.startDate}}</text>
+<!-- pages/plan/trip-detail.wxml - 旅行详情页 -->
+<view class="container">
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+  
+  <view class="detail-content" wx:if="{{trip && !loading}}">
+    <!-- 头部区域 -->
+    <view class="header">
+      <view class="cover">
+        <view class="cover-placeholder">
+          <text class="icon">✈️</text>
+        </view>
       </view>
-      <view class="info-item" wx:if="{{trip.endDate}}">
-        <text class="label">📅 结束日期</text>
-        <text class="value">{{trip.endDate}}</text>
-      </view>
-      <view class="info-item">
-        <text class="label">👥 参与人</text>
-        <text class="value">{{trip.participantCount}}人</text>
-      </view>
-      <view class="info-item" wx:if="{{trip.budget}}">
-        <text class="label">💰 预算</text>
-        <text class="value">¥{{trip.budget}}</text>
+      <view class="status-bar">
+        <text class="status {{trip.status}}">
+          {{trip.status === 'planning' ? '规划中' : trip.status === 'in-progress' ? '进行中' : '已完成'}}
+        </text>
       </view>
     </view>
-  </view>
 
-  <!-- 进度跟踪 -->
-  <view class="card" wx:if="{{trip.status}}">
-    <view class="card-title">进度跟踪</view>
-    <view class="status-progress">
-      <view class="progress-item {{trip.status === 'planning' ? 'active' : ''}}">
-        <text class="progress-icon">⏳</text>
-        <text class="progress-text">规划中</text>
+    <!-- 旅行信息 -->
+    <view class="info-card">
+      <view class="trip-title">{{trip.name}}</view>
+      
+      <view class="info-row">
+        <view class="info-item">
+          <text class="label">目的地</text>
+          <text class="value">{{trip.destination}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">预计天数</text>
+          <text class="value">{{trip.days || 0}} 天</text>
+        </view>
       </view>
-      <view class="progress-item {{trip.status === 'confirmed' ? 'active' : ''}}">
-        <text class="progress-icon">🚀</text>
-        <text class="progress-text">行程已确定</text>
-      </view>
-      <view class="progress-item {{trip.status === 'completed' ? 'active' : ''}}">
-        <text class="progress-icon">✅</text>
-        <text class="progress-text">已完成</text>
+
+      <view class="info-row">
+        <view class="info-item">
+          <text class="label">出发日期</text>
+          <text class="value">{{trip.startDate}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">预算</text>
+          <text class="value">¥{{trip.budget || 0}}</text>
+        </view>
       </view>
     </view>
-  </view>
 
-  <!-- 备注 -->
-  <view class="card" wx:if="{{trip.remark}}">
-    <view class="card-title">备注</view>
-    <text class="remark-text">{{trip.remark}}</text>
-  </view>
+    <!-- 参与成员 -->
+    <view class="info-card">
+      <view class="card-title">参与成员</view>
+      <view class="members">
+        <view class="member" wx:for="{{trip.members}}" wx:key="_id">
+          <view class="avatar">{{item.name ? item.name[0] : '?'}}</view>
+          <view class="name">{{item.name || '未知'}}</view>
+        </view>
+      </view>
+    </view>
 
-  <!-- 操作按钮 -->
-  <view class="actions">
-    <button class="btn-edit" bindtap="editTrip">编辑</button>
-    <button class="btn-delete" bindtap="deleteTrip">删除</button>
-  </view>
-</view>
+    <!-- 旅行描述 -->
+    <view class="info-card" wx:if="{{trip.description}}">
+      <view class="card-title">旅行计划</view>
+      <view class="description">{{trip.description}}</view>
+    </view>
 
-<view class="loading" wx:if="{{loading}}">
-  <text>加载中...</text>
+    <!-- 操作按钮 -->
+    <view class="actions">
+      <button class="btn-edit" bindtap="editTrip">编辑行程</button>
+      <button class="btn-delete" bindtap="deleteTrip">删除</button>
+    </view>
+  </view>
 </view>

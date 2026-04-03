@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/login/index",
+    "pages/family/join",
     "pages/index/index",
     "pages/plan/index",
     "pages/plan/trip-create",

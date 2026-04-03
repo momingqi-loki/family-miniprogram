@@ -1,0 +1,88 @@
+<!-- pages/plan/holiday-create.wxml - 创建节日页面 -->
+<view class="container">
+  <view class="form">
+    <!-- 节日名称 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="required">*</text>
+        节日名称
+      </view>
+      <input 
+        class="input" 
+        placeholder="例如：春节、中秋节、生日"
+        value="{{holiday.name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <!-- 节日日期 -->
+    <view class="form-item">
+      <view class="form-label">
+        <text class="required">*</text>
+        节日日期
+      </view>
+      <picker mode="date" value="{{holiday.date}}" bindchange="onDateChange">
+        <view class="picker {{holiday.date ? '' : 'placeholder'}}">
+          {{holiday.date || '请选择日期'}}
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 节日类型 -->
+    <view class="form-item">
+      <view class="form-label">节日类型</view>
+      <view class="type-grid">
+        <view 
+          wx:for="{{types}}" 
+          wx:key="value"
+          class="type-item {{holiday.type === item.value ? 'active' : ''}}"
+          bindtap="onTypeSelect"
+          data-type="{{item.value}}"
+        >
+          <text class="type-icon">{{item.icon}}</text>
+          <text class="type-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 农历/公历 -->
+    <view class="form-item">
+      <view class="form-label">日期类型</view>
+      <view class="radio-group">
+        <view 
+          class="radio-item {{holiday.isLunar ? '' : 'active'}}"
+          bindtap="onCalendarChange"
+          data-lunar="false"
+        >
+          <text class="radio-dot"></text>
+          公历
+        </view>
+        <view 
+          class="radio-item {{holiday.isLunar ? 'active' : ''}}"
+          bindtap="onCalendarChange"
+          data-lunar="true"
+        >
+          <text class="radio-dot"></text>
+          农历
+        </view>
+      </view>
+    </view>
+
+    <!-- 节日描述 -->
+    <view class="form-item">
+      <view class="form-label">备注说明</view>
+      <textarea 
+        class="textarea"
+        placeholder="添加备注或说明..."
+        value="{{holiday.description}}"
+        bindinput="onDescriptionInput"
+      />
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" bindtap="submit">
+      {{holidayId ? '保存修改' : '创建节日'}}
+    </button>
+  </view>
+</view>

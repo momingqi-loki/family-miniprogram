@@ -1,75 +1,105 @@
-<!--pages/settings/index.wxml-->
+<!-- pages/settings/index.wxml - 设置页面 -->
 <view class="container">
-  <!-- 用户信息 -->
-  <view class="card user-card">
-    <view class="user-avatar">
-      <text class="avatar-text">{{userInfo.nickname.substring(0, 1)}}</text>
+  <!-- 用户卡片 -->
+  <view class="user-card">
+    <view class="user-avatar" bindtap="onEditProfile">
+      <image src="{{userInfo.avatar || '/miniprogram/images/default-avatar.png'}}" mode="aspectFill" />
+      <view class="avatar-edit">
+        <text>编辑</text>
+      </view>
     </view>
     <view class="user-info">
-      <text class="user-name">{{userInfo.nickname}}</text>
-      <text class="user-role">{{userInfo.role === 'admin' ? '管理员' : '成员'}}</text>
+      <text class="user-name">{{userInfo.nickname || '未设置昵称'}}</text>
+      <text class="user-role">{{familyInfo ? familyInfo.name : '未加入家庭'}}</text>
     </view>
-    <view class="user-action" bindtap="editProfile">
-      <text class="action-text">编辑</text>
-    </view>
+    <view class="user-arrow">›</view>
   </view>
 
-  <!-- 家庭信息 -->
+  <!-- 家庭管理 -->
   <view class="section">
-    <view class="section-title">
-      <text class="title">家庭信息</text>
-    </view>
-
-    <view class="card family-card" wx:if="{{familyInfo}}">
-      <text class="family-name">{{familyInfo.name}}</text>
-      <text class="family-count">{{familyMembers.length}} 位成员</text>
-    </view>
-
-    <view class="card family-create" wx:if="{{!familyInfo}}" bindtap="createFamily">
-      <text class="create-icon">🏠</text>
-      <text class="create-text">创建家庭</text>
-    </view>
-  </view>
-
-  <!-- 家庭成员 -->
-  <view class="section" wx:if="{{familyMembers.length > 0}}">
-    <view class="section-title">
-      <text class="title">家庭成员</text>
-    </view>
-
-    <view class="member-list">
-      <view class="member-item" wx:for="{{familyMembers}}" wx:key="id">
-        <text class="member-avatar">{{item.nickname.substring(0, 1)}}</text>
-        <text class="member-name">{{item.nickname}}</text>
-        <text class="member-role">{{item.role === 'admin' ? '管理员' : '成员'}}</text>
+    <view class="section-title">家庭管理</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="onFamilyInfo">
+        <view class="menu-left">
+          <text class="menu-icon">👨‍👩‍👧‍👦</text>
+          <text class="menu-text">家庭信息</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="onInviteCode">
+        <view class="menu-left">
+          <text class="menu-icon">📢</text>
+          <text class="menu-text">邀请成员</text>
+        </view>
+        <view class="menu-badge" wx:if="{{inviteCode}}">{{inviteCode}}</view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="onFamilyMembers">
+        <view class="menu-left">
+          <text class="menu-icon">👥</text>
+          <text class="menu-text">成员列表</text>
+        </view>
+        <text class="menu-arrow">›</text>
       </view>
     </view>
-
-    <view class="section-action" bindtap="inviteMember" wx:if="{{userInfo.role === 'admin'}}">
-      <text class="action-text">+ 邀请成员</text>
-    </view>
   </view>
 
-  <!-- 其他设置 -->
+  <!-- 通用设置 -->
   <view class="section">
-    <view class="section-title">
-      <text class="title">其他</text>
-    </view>
-
-    <view class="setting-list">
-      <view class="setting-item">
-        <text class="setting-label">通知设置</text>
-        <text class="setting-arrow">▶</text>
+    <view class="section-title">通用设置</view>
+    <view class="menu-list">
+      <view class="menu-item" bindtap="onNotifications">
+        <view class="menu-left">
+          <text class="menu-icon">🔔</text>
+          <text class="menu-text">通知设置</text>
+        </view>
+        <view class="switch {{notificationsEnabled ? 'active' : ''}}" bindtap="onToggleNotification">
+          <view class="switch-thumb"></view>
+        </view>
       </view>
-      <view class="setting-item">
-        <text class="setting-label">关于我们</text>
-        <text class="setting-arrow">▶</text>
+      <view class="menu-item" bindtap="onPrivacy">
+        <view class="menu-left">
+          <text class="menu-icon">🔒</text>
+          <text class="menu-text">隐私设置</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="onAbout">
+        <view class="menu-left">
+          <text class="menu-icon">ℹ️</text>
+          <text class="menu-text">关于我们</text>
+        </view>
+        <text class="menu-arrow">›</text>
       </view>
     </view>
   </view>
 
-  <!-- 退出登录 -->
-  <view class="section logout-section">
-    <button class="btn-logout" bindtap="logout">退出登录</button>
+  <!-- 账号操作 -->
+  <view class="section">
+    <view class="section-title">账号</view>
+    <view class="menu-list">
+      <button class="menu-item btn-clear" open-type="contact">
+        <view class="menu-left">
+          <text class="menu-icon">💬</text>
+          <text class="menu-text">联系客服</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </button>
+      <view class="menu-item danger" bindtap="onLogout">
+        <view class="menu-left">
+          <text class="menu-icon">🚪</text>
+          <text class="menu-text">退出登录</text>
+        </view>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
   </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text>家庭管理小程序 v1.0.0</text>
+  </view>
+
+  <!-- 安全区 -->
+  <view class="safe-bottom"></view>
 </view>

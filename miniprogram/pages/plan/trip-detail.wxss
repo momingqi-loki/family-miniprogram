@@ -1,0 +1,166 @@
+/* pages/plan/trip-detail.wxss - 旅行详情页样式 */
+.container {
+  padding: 20rpx;
+  background-color: #F5F5F5;
+  min-height: 100vh;
+}
+
+.loading {
+  text-align: center;
+  padding: 200rpx 0;
+  color: #999;
+}
+
+.detail-content {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+/* 头部图片区域 */
+.header-image {
+  width: 100%;
+  height: 400rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-placeholder {
+  color: #fff;
+  font-size: 120rpx;
+  opacity: 0.5;
+}
+
+/* 基本信息 */
+.info-section {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.trip-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.trip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.meta-icon {
+  margin-right: 8rpx;
+  color: #FF8C00;
+}
+
+/* 描述区域 */
+.desc-section {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.desc-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* 家庭成员 */
+.members-section {
+  padding: 30rpx;
+}
+
+.members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.member-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.member-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: #F5F5F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #FF8C00;
+  margin-bottom: 8rpx;
+}
+
+.member-name {
+  font-size: 22rpx;
+  color: #666;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 30rpx;
+  background: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.btn-edit, .btn-delete {
+  flex: 1;
+  padding: 24rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4rpx 16rpx rgba(255, 140, 0, 0.3);
+}
+
+.btn-delete {
+  background: #fff;
+  color: #FF4444;
+  border: 1rpx solid #FF4444;
+}
+
+/* 状态标签 */
+.status-tag {
+  display: inline-block;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+.status-tag.planning { background: #E3F2FD; color: #1976D2; }
+.status-tag.in-progress { background: #FFF3E0; color: #FF8C00; }
+.status-tag.completed { background: #E8F5E9; color: #4CAF50; }

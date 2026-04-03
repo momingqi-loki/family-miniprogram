@@ -1,0 +1,182 @@
+/* pages/login/index.wxss - 登录页面样式 */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFFFFF 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景装饰 */
+.bg-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500rpx;
+  overflow: hidden;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
+}
+
+.circle-1 {
+  width: 400rpx;
+  height: 400rpx;
+  top: -150rpx;
+  right: -100rpx;
+}
+
+.circle-2 {
+  width: 300rpx;
+  height: 300rpx;
+  top: -50rpx;
+  left: -80rpx;
+}
+
+.circle-3 {
+  width: 200rpx;
+  height: 200rpx;
+  top: 100rpx;
+  right: 50rpx;
+}
+
+/* Logo 区域 */
+.logo-section {
+  padding-top: 200rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-container {
+  width: 180rpx;
+  height: 180rpx;
+  background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 100%);
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16rpx 48rpx rgba(255, 140, 0, 0.3);
+}
+
+.logo-icon {
+  font-size: 80rpx;
+}
+
+.app-name {
+  margin-top: 40rpx;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 4rpx;
+}
+
+.app-slogan {
+  margin-top: 16rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 登录区域 */
+.login-section {
+  margin: 120rpx 60rpx 0;
+}
+
+.btn-wechat {
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+}
+
+.btn-wechat::after {
+  border: none;
+}
+
+.btn-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.btn-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* 分隔符 */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 50rpx 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1rpx;
+  background: #E5E5E5;
+}
+
+.divider-text {
+  padding: 0 30rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 手机号登录 */
+.btn-phone {
+  width: 100%;
+  height: 100rpx;
+  background: #FFFFFF;
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid #E5E5E5;
+}
+
+.btn-phone::after {
+  border: none;
+}
+
+.btn-phone .btn-icon {
+  color: #333;
+}
+
+.btn-phone .btn-text {
+  color: #333;
+}
+
+/* 协议 */
+.agreement {
+  position: absolute;
+  bottom: 120rpx;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.link {
+  color: #FF8C00;
+}
+
+/* 版本 */
+.version {
+  position: absolute;
+  bottom: 60rpx;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 22rpx;
+  color: #CCC;
+}

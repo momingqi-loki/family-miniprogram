@@ -1,4 +1,4 @@
-// pages/settings/index.js
+// pages/settings/index.js - 设置页面逻辑
 const app = getApp()
 const request = require('../../utils/request')
 
@@ -6,106 +6,124 @@ Page({
   data: {
     userInfo: null,
     familyInfo: null,
-    familyMembers: []
+    inviteCode: '',
+    notificationsEnabled: true
   },
 
-  onLoad: function () {
-    this.loadUserInfo()
-    this.loadFamilyInfo()
-    this.loadFamilyMembers()
-  },
-
-  onShow: function () {
-    this.loadUserInfo()
-  },
-
-  // 加载用户信息
-  loadUserInfo: function () {
-    request.get('/user/profile').then(res => {
-      this.setData({
-        userInfo: res.data
-      })
-    }).catch(err => {
-      console.error('加载用户信息失败', err)
+  onLoad: function() {
+    this.setData({
+      userInfo: app.globalData.userInfo,
+      familyInfo: app.globalData.familyInfo,
+      notificationsEnabled: wx.getStorageSync('notificationsEnabled') !== false
     })
-  },
-
-  // 加载家庭信息
-  loadFamilyInfo: function () {
-    if (!app.globalData.familyId) {
-      return
+    
+    if (app.globalData.isLogin) {
+      this.loadData()
     }
+  },
 
-    request.get('/family/info').then(res => {
-      this.setData({
-        familyInfo: res.data
-      })
+  onShow: function() {
+    this.setData({
+      userInfo: app.globalData.userInfo,
+      familyInfo: app.globalData.familyInfo
+    })
+  },
+
+  loadData: function() {
+    // 加载家庭邀请码
+    request({
+      url: '/family/invite-code',
+      method: 'GET'
+    }).then(res => {
+      this.setData({ inviteCode: res.data.inviteCode })
     }).catch(err => {
-      console.error('加载家庭信息失败', err)
+      console.error('获取邀请码失败', err)
     })
   },
 
-  // 加载家庭成员
-  loadFamilyMembers: function () {
-    if (!app.globalData.familyId) {
-      return
-    }
-
-    request.get('/family/members').then(res => {
-      this.setData({
-        familyMembers: res.data || []
-      })
-    }).catch(err => {
-      console.error('加载家庭成员失败', err)
-    })
+  // 编辑个人资料
+  onEditProfile: function() {
+    wx.navigateTo({ url: '/pages/settings/profile' })
   },
 
-  // 编辑个人信息
-  editProfile: function () {
-    wx.navigateTo({
-      url: '/pages/settings/profile'
-    })
-  },
-
-  // 创建家庭
-  createFamily: function () {
-    wx.navigateTo({
-      url: '/pages/settings/family-create'
-    })
+  // 家庭信息
+  onFamilyInfo: function() {
+    wx.showToast({ title: '功能开发中', icon: 'none' })
   },
 
   // 邀请成员
-  inviteMember: function () {
+  onInviteCode: function() {
+    if (!this.data.inviteCode) {
+      wx.showToast({ title: '请先创建或加入家庭', icon: 'none' })
+      return
+    }
+
     wx.showModal({
-      title: '邀请成员',
-      content: '邀请功能待实现',
+      title: '邀请码',
+      content: `您的家庭邀请码是：${this.data.inviteCode}\n\n分享给家人，让他们加入您的家庭`,
+      confirmText: '复制',
+      success: res => {
+        if (res.confirm) {
+          wx.setClipboardData({
+            data: this.data.inviteCode,
+            success: () => {
+              wx.showToast({ title: '已复制', icon: 'success' })
+            }
+          })
+        }
+      }
+    })
+  },
+
+  // 成员列表
+  onFamilyMembers: function() {
+    wx.navigateTo({ url: '/pages/family/join' })
+  },
+
+  // 通知设置
+  onToggleNotification: function() {
+    const enabled = !this.data.notificationsEnabled
+    this.setData({ notificationsEnabled: enabled })
+    wx.setStorageSync('notificationsEnabled', enabled)
+    
+    if (enabled) {
+      wx.showToast({ title: '已开启通知', icon: 'success' })
+    } else {
+      wx.showToast({ title: '已关闭通知', icon: 'none' })
+    }
+  },
+
+  onNotifications: function() {
+    this.onToggleNotification()
+  },
+
+  // 隐私设置
+  onPrivacy: function() {
+    wx.showToast({ title: '功能开发中', icon: 'none' })
+  },
+
+  // 关于我们
+  onAbout: function() {
+    wx.showModal({
+      title: '关于我们',
+      content: '家庭管理小程序 v1.0.0\n\n帮助家庭成员更好地管理日常事务、旅行规划和节日庆祝。\n\n© 2024 Family Management',
       showCancel: false
     })
   },
 
   // 退出登录
-  logout: function () {
+  onLogout: function() {
     wx.showModal({
       title: '确认退出',
       content: '确定要退出登录吗？',
-      success: (res) => {
+      success: res => {
         if (res.confirm) {
-          wx.clearStorageSync('token')
-          wx.clearStorageSync('userInfo')
-          app.globalData.token = null
-          app.globalData.userInfo = null
-          app.globalData.familyId = null
-
-          wx.showToast({
-            title: '已退出登录',
-            icon: 'success'
-          })
-
-          setTimeout(() => {
-            wx.reLaunch({
-              url: '/pages/login/login'
-            })
-          }, 1500)
+          request({
+            url: '/user/logout',
+            method: 'POST'
+          }).catch(() => {})
+          
+          app.logout()
         }
       }
     })

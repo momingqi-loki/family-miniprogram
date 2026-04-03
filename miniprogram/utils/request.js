@@ -71,7 +71,7 @@ function request(options) {
           });
           setTimeout(() => {
             wx.reLaunch({
-              url: '/pages/login/login'
+              url: '/pages/login/index'
             });
           }, 1500);
           reject(res.data);

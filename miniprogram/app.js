@@ -1,34 +1,67 @@
-// 小程序入口文件
+// miniprogram/app.js - 小程序入口
 App({
-  onLaunch: function () {
-    // 初始化全局数据
-    this.globalData = {
-      userInfo: null,
-      familyId: null,
-      token: null
-    }
+  globalData: {
+    userInfo: null,
+    familyInfo: null,
+    token: null,
+    isLogin: false
+  },
 
+  onLaunch: function() {
     // 检查登录状态
     this.checkLoginStatus()
   },
 
+  onShow: function() {
+    // 每次进入应用检查登录状态
+    this.checkLoginStatus()
+  },
+
   // 检查登录状态
-  checkLoginStatus: function () {
+  checkLoginStatus: function() {
     const token = wx.getStorageSync('token')
     const userInfo = wx.getStorageSync('userInfo')
-    const familyId = wx.getStorageSync('familyId')
+    const familyInfo = wx.getStorageSync('familyInfo')
 
-    if (token && userInfo) {
-      this.globalData.token = token
-      this.globalData.userInfo = userInfo
-      this.globalData.familyId = familyId
+    this.globalData.token = token
+    this.globalData.userInfo = userInfo
+    this.globalData.familyInfo = familyInfo
+    this.globalData.isLogin = !!(token && userInfo)
+  },
+
+  // 检查是否需要跳转登录页
+  checkAuth: function(callback) {
+    if (this.globalData.isLogin) {
+      callback && callback()
+    } else {
+      wx.redirectTo({
+        url: '/pages/login/index'
+      })
     }
   },
 
-  // 全局数据
-  globalData: {
-    userInfo: null,
-    familyId: null,
-    token: null
+  // 检查是否已加入家庭
+  checkFamily: function(callback) {
+    if (this.globalData.familyInfo && this.globalData.familyInfo._id) {
+      callback && callback()
+    } else {
+      wx.redirectTo({
+        url: '/pages/family/join'
+      })
+    }
+  },
+
+  // 退出登录
+  logout: function() {
+    wx.clearStorageSync()
+    this.globalData = {
+      userInfo: null,
+      familyInfo: null,
+      token: null,
+      isLogin: false
+    }
+    wx.redirectTo({
+      url: '/pages/login/index'
+    })
   }
 })

@@ -1,87 +1,154 @@
-<!--pages/index/index.wxml-->
+<!-- pages/index/index.wxml - 首页 -->
 <view class="container">
-  <!-- 头部 -->
-  <view class="header">
-    <text class="greeting">👋 早上好，{{userInfo.nickname}}</text>
-    <text class="date">{{todayDate}}</text>
+  <!-- 顶部欢迎区域 -->
+  <view class="header-section">
+    <view class="greeting-area">
+      <view class="greeting">
+        <text class="wave">👋</text>
+        <text class="greeting-text">{{greeting}}，{{userInfo.nickname || '用户'}}</text>
+      </view>
+      <text class="date-text">{{todayDate}}</text>
+    </view>
+    <view class="weather-hint" bindtap="onWeatherHint">
+      <text class="weather-icon">☀️</text>
+    </view>
   </view>
 
-  <!-- 今日概览 -->
-  <view class="section">
-    <view class="section-title">
-      <text class="title">今日概览</text>
+  <!-- 统计卡片 -->
+  <view class="stats-row">
+    <view class="stat-card">
+      <view class="stat-value">{{taskCount}}</view>
+      <view class="stat-label">待办任务</view>
     </view>
+    <view class="stat-card">
+      <view class="stat-value">{{eventCount}}</view>
+      <view class="stat-label">今日日程</view>
+    </view>
+    <view class="stat-card">
+      <view class="stat-value">{{memberCount}}</view>
+      <view class="stat-label">家庭成员</view>
+    </view>
+  </view>
 
-    <!-- 今日待办 -->
-    <view class="card" wx:if="{{todayTasks.length > 0}}">
-      <view class="card-header">
-        <text class="card-title">📋 今日待办 ({{todayTasks.length}})</text>
-      </view>
-      <view class="task-list">
-        <view
-          class="task-item"
-          wx:for="{{todayTasks}}"
-          wx:key="id"
-          bindtap="onTaskClick"
-          data-id="{{item.id}}"
-        >
+  <!-- 今日任务 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📋 今日待办</text>
+      <text class="section-more" bindtap="onViewAllTasks">查看全部 ›</text>
+    </view>
+    
+    <view class="task-list" wx:if="{{todayTasks.length > 0}}">
+      <view 
+        class="task-card {{item.completed ? 'completed' : ''}}"
+        wx:for="{{todayTasks}}"
+        wx:key="_id"
+        bindtap="onTaskClick"
+        data-id="{{item._id}}"
+      >
+        <view class="task-checkbox" catchtap="onToggleTask" data-id="{{item._id}}">
+          <view class="checkbox {{item.status === 'completed' ? 'checked' : ''}}">
+            <text wx:if="{{item.status === 'completed'}}">✓</text>
+          </view>
+        </view>
+        <view class="task-content">
           <text class="task-title">{{item.title}}</text>
-          <text class="task-assignee">← {{item.assigneeName}}</text>
+          <view class="task-meta">
+            <text class="task-priority priority-{{item.priority}}">
+              {{item.priority === 'high' ? '高' : item.priority === 'medium' ? '中' : '低'}}
+            </text>
+            <text class="task-assignee" wx:if="{{item.assignee}}">
+              👤 {{item.assignee.nickname || '未分配'}}
+            </text>
+          </view>
         </view>
       </view>
     </view>
 
-    <!-- 今日日程 -->
-    <view class="card" wx:if="{{todayEvents.length > 0}}">
-      <view class="card-header">
-        <text class="card-title">📅 今日日程 ({{todayEvents.length}})</text>
-      </view>
-      <view class="event-list">
-        <view
-          class="event-item"
-          wx:for="{{todayEvents}}"
-          wx:key="id"
-          bindtap="onEventClick"
-          data-id="{{item.id}}"
-        >
-          <text class="event-time">{{item.startTime}}</text>
-          <text class="event-title">{{item.title}}</text>
-        </view>
-      </view>
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">✅</text>
+      <text class="empty-text">今天没有待办任务</text>
     </view>
   </view>
 
-  <!-- 快捷入口 -->
-  <view class="quick-actions">
-    <view class="action-item" bindtap="navigateToPlan">
-      <text class="action-icon">🌴</text>
-      <text class="action-label">旅游规划</text>
-    </view>
-    <view class="action-item" bindtap="navigateToTask">
-      <text class="action-icon">✅</text>
-      <text class="action-label">任务管理</text>
-    </view>
-    <view class="action-item" bindtap="navigateToSchedule">
-      <text class="action-icon">📅</text>
-      <text class="action-label">日程安排</text>
-    </view>
-    <view class="action-item" bindtap="navigateToSettings">
-      <text class="action-icon">⚙️</text>
-      <text class="action-label">设置</text>
-    </view>
-  </view>
-
-  <!-- 家庭成员状态 -->
+  <!-- 今日日程 -->
   <view class="section">
-    <view class="section-title">
-      <text class="title">家庭成员状态</text>
+    <view class="section-header">
+      <text class="section-title">📅 今日日程</text>
+      <text class="section-more" bindtap="onViewAllEvents">查看全部 ›</text>
     </view>
-    <view class="member-list">
-      <view class="member-item" wx:for="{{familyMembers}}" wx:key="id">
-        <text class="member-avatar">{{item.nickname.substring(0, 1)}}</text>
-        <text class="member-name">{{item.nickname}}</text>
-        <text class="member-status">{{item.online ? '在线' : '离线'}}</text>
+
+    <view class="schedule-list" wx:if="{{todayEvents.length > 0}}">
+      <view 
+        class="schedule-card"
+        wx:for="{{todayEvents}}"
+        wx:key="_id"
+        bindtap="onEventClick"
+        data-id="{{item._id}}"
+      >
+        <view class="schedule-time">
+          <text class="time-text">{{item.time || '全天'}}</text>
+        </view>
+        <view class="schedule-content">
+          <text class="schedule-title">{{item.title}}</text>
+          <text class="schedule-type tag tag-{{item.type}}">
+            {{item.type === 'meeting' ? '会议' : item.type === 'reminder' ? '提醒' : item.type === 'activity' ? '活动' : '其他'}}
+          </text>
+        </view>
+        <text class="schedule-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📅</text>
+      <text class="empty-text">今天没有日程安排</text>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🚀 快捷操作</text>
+    </view>
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="onQuickAddTask">
+        <view class="quick-icon">✅</view>
+        <text class="quick-label">添加任务</text>
+      </view>
+      <view class="quick-item" bindtap="onQuickAddEvent">
+        <view class="quick-icon">📅</view>
+        <text class="quick-label">添加日程</text>
+      </view>
+      <view class="quick-item" bindtap="onPlanTrip">
+        <view class="quick-icon">✈️</view>
+        <text class="quick-label">旅行规划</text>
+      </view>
+      <view class="quick-item" bindtap="onPlanHoliday">
+        <view class="quick-icon">🎉</view>
+        <text class="quick-label">节日计划</text>
       </view>
     </view>
   </view>
+
+  <!-- 家庭成员 -->
+  <view class="section" wx:if="{{familyMembers.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">👨‍👩‍👧‍👦 家庭成员</text>
+      <text class="section-more" bindtap="onManageFamily">管理 ›</text>
+    </view>
+    <view class="member-scroll">
+      <view class="member-card" wx:for="{{familyMembers}}" wx:key="_id">
+        <view class="member-avatar {{item.online ? 'online' : ''}}">
+          {{item.nickname ? item.nickname[0] : '?'}}
+        </view>
+        <text class="member-name">{{item.nickname || '未知'}}</text>
+        <view class="member-status">
+          <view class="status-dot {{item.online ? 'online' : ''}}"></view>
+          <text>{{item.online ? '在线' : '离线'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部安全区 -->
+  <view class="safe-bottom"></view>
 </view>
